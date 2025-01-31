@@ -13,8 +13,16 @@ class Diary {
     }
 
     static async create(data){
-        const {date, title, diary_entry} = data
-        const response = db.query("INSER INTO diary (date, title, diary_entry) VALUES ($1, $2, $3) RETURNING *;", [date, title, diary_entry])
-        return new Diary(response.rows[0])
+        const {title, diary_entry} = data
+        const exisitngDiaryName = await db.query("SELECT * FROM diary WHERE LOWER(title) = LOWER($1);", [title])
+        if(exisitngDiaryName.rows.length === 0) {
+            let response = await db.query("INSERT INTO diary (title, diary_entry) VALUES ($1, $2) RETURNING *;", [title, diary_entry])
+            console.log(response, "response hit")
+            return new Diary(response.rows[0])
+        } else{
+            throw new Error("Diary with this title already exists!")
+        }
     }
 }
+
+module.exports = Diary
