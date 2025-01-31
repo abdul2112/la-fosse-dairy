@@ -8,7 +8,7 @@ const sql = fs.readFileSync('./server/db/diary.sql').toString()
 db.query(sql)
     .then(data => {
         db.end()
-        console.log("Setup complete", data)
+        console.log("Setup complete")
     })
     .catch((error)=> console.log("Setp error" + error))
 
